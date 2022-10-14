@@ -4,7 +4,7 @@ import { calcularTotal } from "../helpers";
 //Definir el state
 
 const Formulario = (props) => {
-  const {cantidad,guardarCantidad,plazo,guardarPlazo,total,guardarTotal} = props;
+  const {guardarCargando,cantidad,guardarCantidad,plazo,guardarPlazo,total,guardarTotal} = props;
     
     const leerCantidad = (e) => {
         guardarCantidad(parseInt(e.target.value))
@@ -24,20 +24,28 @@ const Formulario = (props) => {
         }
         //Eliminar el error previo.
         guardarError(false);
-
+    
+        //Habilitar spinner        
+        guardarCargando(true);
         // Realizar la cotización
-        
-       const total =  calcularTotal(cantidad,plazo)
-       guardarTotal(total);
-       console.log(total);
+
+                setTimeout(() => {
+            const total =  calcularTotal(cantidad,plazo)
+            console.log(total);            
+            guardarTotal(total)
+            guardarCargando(false);
+            
+            //Deshabilidat el spiner
+        }, 3000);
+
+       
     }
 
     return ( 
         <>
-        <form onSubmit={calcularPrestamo}>
-            <h2>Cantidad : {cantidad}</h2>
+        <form onSubmit={calcularPrestamo}>      
             
-            <h2>Plazo : {plazo}</h2>
+            
           <div className="row">
               <div>
                   <label>Cantidad Prestamo</label>
