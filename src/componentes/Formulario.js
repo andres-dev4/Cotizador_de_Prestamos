@@ -1,20 +1,43 @@
 import { useState } from "react";
+import { calcularTotal } from "../helpers";
 
 //Definir el state
 
-const Formulario = ({cantidad,guardarCantidad}) => {
-
- // cantidad es lo que obtiene el valor 
- // Guardar cantidad es la funcion pa guardar o modificar el state
+const Formulario = (props) => {
+  const {cantidad,guardarCantidad,plazo,guardarPlazo,total,guardarTotal} = props;
     
     const leerCantidad = (e) => {
         guardarCantidad(parseInt(e.target.value))
     }
+    const guardarPlazos = (e) => {
+        guardarPlazo(parseInt(e.target.value))
+    }
 
+    //Definir state
+    const [error,guardarError] = useState(false);
+    const calcularPrestamo = e => {
+        e.preventDefault();
+        // Validar 
+        if(cantidad === 0 || plazo === '' || isNaN(plazo) ){
+           guardarError(true);
+           return;
+        }
+        //Eliminar el error previo.
+        guardarError(false);
+
+        // Realizar la cotización
+        
+       const total =  calcularTotal(cantidad,plazo)
+       guardarTotal(total);
+       console.log(total);
+    }
 
     return ( 
-        <form>
-            {cantidad}
+        <>
+        <form onSubmit={calcularPrestamo}>
+            <h2>Cantidad : {cantidad}</h2>
+            
+            <h2>Plazo : {plazo}</h2>
           <div className="row">
               <div>
                   <label>Cantidad Prestamo</label>
@@ -29,6 +52,7 @@ const Formulario = ({cantidad,guardarCantidad}) => {
                   <label>Plazo para Pagar</label>
                   <select 
                       className="u-full-width"
+                      onChange ={guardarPlazos}
                   >
                       <option value="">Seleccionar</option>
                       <option value="3">3 meses</option>
@@ -46,6 +70,8 @@ const Formulario = ({cantidad,guardarCantidad}) => {
               </div>
           </div>
   </form>
+  {(error) ? <p className="error">Todos los campos son obligatorios</p> : ''}
+  </>
      );
 }
  
